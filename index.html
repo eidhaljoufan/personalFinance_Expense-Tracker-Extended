@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Expense Tracker App</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="tracker-app">
+
+    <header class="tracker-header">
+      <h1 class="tracker-header__title">Tracker<span style="color:var(--accent-blue)">.io</span></h1>
+      <div class="tracker-header__user">
+        <div class="tracker-header__user-info">
+          <span id="userGreeting" class="tracker-header__greeting">Halo, <strong>Siswa Front-End</strong></span>
+          <span class="tracker-header__date">User</span>
+        </div>
+        <button id="profileButton" class="tracker-header__avatar" aria-label="Buka menu pengguna" aria-haspopup="true" aria-expanded="false">👤</button>
+        
+        <div id="profileDropdown" class="tracker-header__dropdown" role="menu" aria-label="Menu pengguna">
+          <button id="toggleThemeButton" class="tracker-header__dropdown-item" type="button">
+              🌙 Ubah Tema
+          </button>
+
+          <button id="openSettingsButton" class="tracker-header__dropdown-item" type="button">
+              ⚙️ Pengaturan
+          </button>
+
+          <button id="openAboutButton" class="tracker-header__dropdown-item" type="button">
+              ℹ️ Tentang
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="tracker-summary" aria-labelledby="summary-heading">
+        <h2 id="summary-heading" class="visually-hidden">Ringkasan Keuangan</h2>
+
+        <div class="tracker-summary__balance">
+          <h3 class="tracker-summary__label">Saldo Saat Ini</h3>
+          <p class="tracker-summary__balance-amount">Rp 0</p>
+        </div>
+
+        <div class="tracker-summary__stat">
+          <h3 class="tracker-summary__label">Pemasukan</h3>
+          <p class="tracker-summary__stat-amount tracker-summary__stat-amount--income">Rp 0</p>
+        </div>
+
+        <div class="tracker-summary__stat">
+          <h3 class="tracker-summary__label">Pengeluaran</h3>
+          <p class="tracker-summary__stat-amount tracker-summary__stat-amount--expense">Rp 0</p>
+        </div>
+      </section>
+
+      <section class="tracker-form-section" aria-labelledby="form-heading">
+        <div class="tracker-form-section__card">
+          <h2 id="form-heading" class="tracker-form-section__heading">Tambah Pencatatan Baru</h2>
+
+          <form id="transactionForm" data-testid="transactionForm" class="tracker-form">
+            <div class="tracker-form__field">
+              <label class="tracker-form__label" for="transactionFormTitleInput">Keterangan</label>
+              <input type="text" id="transactionFormTitleInput" data-testid="transactionFormTitleInput" class="tracker-form__input" placeholder="Misal: Makan siang...">
+            </div>
+            <div class="tracker-form__field">
+              <label class="tracker-form__label" for="transactionFormAmountInput">Nominal (Rp)</label>
+              <input type="number" id="transactionFormAmountInput" data-testid="transactionFormAmountInput" class="tracker-form__input" placeholder="50000">
+            </div>
+            <div class="tracker-form__field">
+              <label class="tracker-form__label" for="transactionFormDateInput">Tanggal</label>
+              <input type="date" id="transactionFormDateInput" data-testid="transactionFormDateInput" class="tracker-form__input">
+            </div>
+            <div class="tracker-form__field">
+              <label class="tracker-form__label" for="transactionFormTypeSelect">Klasifikasi</label>
+              <select id="transactionFormTypeSelect" data-testid="transactionFormTypeSelect" class="tracker-form__input">
+                <option value="income">Uang Masuk (+)</option>
+                <option value="expense">Uang Keluar (-)</option>
+              </select>
+            </div>
+            <button type="submit" data-testid="transactionFormSubmitButton" class="tracker-form__submit">Simpan</button>
+          </form>
+        </div>
+      </section>
+
+      <section class="tracker-history" aria-labelledby="history-heading">
+        <h2 id="history-heading" class="visually-hidden">Riwayat Transaksi</h2>
+
+        <div class="tracker-search">
+          <form id="searchTransactionForm" data-testid="searchTransactionForm" class="tracker-search__form" role="search">
+            <input type="search" id="searchTransactionFormTitleInput" data-testid="searchTransactionFormTitleInput" class="tracker-form__input" placeholder="Cari transaksi berdasarkan judul..." aria-label="Kata kunci pencarian transaksi">
+            <button type="submit" data-testid="searchTransactionFormSubmitButton" class="tracker-search__submit" aria-label="Mulai Pencarian">Cari</button>
+          </form>
+        </div>
+
+        <div class="tracker-history__grid">
+          <div class="tracker-transaction-list">
+            <div class="tracker-transaction-list__header">
+              <h3 class="tracker-transaction-list__title">Arus Pemasukan</h3>
+            </div>
+              <!-- Jangan ubah atau hapus atribut data-testid pada elemen berikut -->
+            <div id="incomeList" data-testid="incomeList" class="tracker-transaction-list__container">
+              <!-- Kartu transaksi pemasukan akan disisipkan di sini oleh JavaScript -->
+            </div>
+          </div>
+
+          <div class="tracker-transaction-list">
+            <div class="tracker-transaction-list__header">
+              <h3 class="tracker-transaction-list__title">Arus Pengeluaran</h3>
+            </div>
+            <!-- Jangan ubah atau hapus atribut data-testid pada elemen berikut -->
+            <div id="expenseList" data-testid="expenseList" class="tracker-transaction-list__container">
+              <!-- Kartu transaksi pengeluaran akan disisipkan di sini oleh JavaScript -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <footer class="tracker-footer">
+      <p>&#169; 2026 Tracker.io. Disusun sebagai Starter Project Submission Front-End Web.</p>
+    </footer>
+
+  </div>
+
+  <div id="settingsModal" class="modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="settingsModalTitle">
+    <div class="modal__dialog">
+      <div class="modal__header">
+        <h2 id="settingsModalTitle">Pengaturan</h2>
+        <button id="closeSettingsButton" class="modal__close" aria-label="Tutup pengaturan">✕</button>
+      </div>
+      <div class="modal__body">
+        <div class="settings-card">
+          <h3 class="settings-card__title">Akun</h3>
+          <p id="currentUserStatus" class="settings-card__subtitle">Belum masuk. Silakan login atau daftar untuk menyimpan data Anda.</p>
+          <div class="settings-action-group" id="accountActionGroup">
+            <button id="loginButton" class="settings-action-button" type="button">Masuk</button>
+            <button id="registerButton" class="settings-action-button settings-action-button--secondary" type="button">Daftar</button>
+            <button id="editProfileButton" class="settings-action-button settings-action-button--secondary hidden" type="button">Ubah Profil</button>
+            <button id="logoutButton" class="settings-action-button hidden" type="button">Keluar</button>
+          </div>
+
+          <form id="loginForm" class="settings-form hidden">
+            <div class="tracker-form__field">
+              <label class="tracker-form__label" for="loginUsernameInput">Username</label>
+              <input id="loginUsernameInput" type="text" class="tracker-form__input" placeholder="Username">
+            </div>
+            <div class="tracker-form__field">
+              <label class="tracker-form__label" for="loginPasswordInput">Password</label>
+              <input id="loginPasswordInput" type="password" class="tracker-form__input" placeholder="Password">
+            </div>
+            <button id="loginSubmitButton" class="settings-action-button" type="button">Masuk Sekarang</button>
+          </form>
+
+          <form id="registerForm" class="settings-form hidden">
+            <div class="tracker-form__field">
+              <label class="tracker-form__label" for="registerUsernameInput">Username</label>
+              <input id="registerUsernameInput" type="text" class="tracker-form__input" placeholder="Username baru">
+            </div>
+            <div class="tracker-form__field">
+              <label class="tracker-form__label" for="registerPasswordInput">Password</label>
+              <input id="registerPasswordInput" type="password" class="tracker-form__input" placeholder="Password baru">
+            </div>
+            <button id="registerSubmitButton" class="settings-action-button settings-action-button--secondary" type="button">Daftar Sekarang</button>
+          </form>
+
+          <form id="editProfileForm" class="settings-form hidden">
+            <div class="tracker-form__field">
+              <label class="tracker-form__label" for="editUsernameInput">Username</label>
+              <input id="editUsernameInput" type="text" class="tracker-form__input" placeholder="Username baru">
+            </div>
+            <div class="tracker-form__field">
+              <label class="tracker-form__label" for="editPasswordInput">Password</label>
+              <input id="editPasswordInput" type="password" class="tracker-form__input" placeholder="Password baru">
+            </div>
+            <button id="editProfileSubmitButton" class="settings-action-button" type="button">Simpan Profil</button>
+          </form>
+        </div>
+        <div class="settings-card">
+          <h3 class="settings-card__title">Tema</h3>
+          <p class="settings-card__subtitle">Pilih mode tampilan yang nyaman untuk digunakan kapan saja.</p>
+          <label class="settings-toggle">
+            <input id="themeToggle" type="checkbox">
+            <span class="settings-toggle__label">Dark Mode</span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="aboutModal" class="modal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="aboutModalTitle">
+    <div class="modal__dialog modal__dialog--small">
+      <div class="modal__header">
+        <h2 id="aboutModalTitle">Tentang Tracker.io</h2>
+        <button id="closeAboutButton" class="modal__close" aria-label="Tutup tentang">✕</button>
+      </div>
+      <div class="modal__body">
+        <p class="about-text">Tracker.io adalah aplikasi pencatat keuangan sederhana untuk membantu Anda melihat pemasukan, pengeluaran, dan saldo secara jelas. Dibuat untuk pelatihan Front-End Web dengan fokus pada pengalaman pengguna, tema modern, dan aksesibilitas.</p>
+        <ul class="about-list">
+          <li>Fitur utama: tambah transaksi, pencarian, dan ringkasan real-time.</li>
+          <li>Mode gelap otomatis disimpan di browser.</li>
+          <li>Tema dirancang agar nyaman di desktop maupun mobile.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>
