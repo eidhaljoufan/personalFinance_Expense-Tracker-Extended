@@ -8,6 +8,9 @@ const STORAGE_KEY_THEME = "expense-tracker-theme";
 const STORAGE_KEY_USERS = "expense-tracker-users";
 const STORAGE_KEY_SESSION = "expense-tracker-session";
 
+// Nama Custom Event
+const RENDER_EVENT = "transaction:updated";
+
 let transactions = [];
 let editingId = null;
 
@@ -77,6 +80,8 @@ function formatDate(inputDate) {
 
 function saveTransactions() {
   localStorage.setItem(STORAGE_KEY_TRANSACTIONS, JSON.stringify(transactions));
+  // Kirim sinyal Custom Event setiap kali data disimpan/berubah
+  document.dispatchEvent(new Event(RENDER_EVENT));
 }
 
 function loadTransactions() {
@@ -182,13 +187,13 @@ function createTransactionCard(transaction) {
     </div>
   `;
 
+  // Hapus Transaksi
   card.querySelector(".delete-btn").addEventListener("click", () => {
     transactions = transactions.filter((item) => item.id !== transaction.id);
-    saveTransactions();
-    renderTransactions();
-    updateSummary();
+    saveTransactions(); // Memicu RENDER_EVENT
   });
 
+  // Edit Transaksi
   card.querySelector(".edit-btn").addEventListener("click", () => {
     editingId = transaction.id;
     titleInput.value = transaction.title;
@@ -198,11 +203,10 @@ function createTransactionCard(transaction) {
     titleInput.focus();
   });
 
+  // Pindah Tipe Transaksi
   card.querySelector(".toggle-btn").addEventListener("click", () => {
     transaction.type = transaction.type === "income" ? "expense" : "income";
-    saveTransactions();
-    renderTransactions();
-    updateSummary();
+    saveTransactions(); // Memicu RENDER_EVENT
   });
 
   return card;
@@ -299,6 +303,7 @@ function showLoginSuccess(message) {
   hideAllAuthForms();
 }
 
+// Submit Form Transaksi
 transactionForm.addEventListener("submit", (event) => {
   event.preventDefault();
 
@@ -336,12 +341,11 @@ transactionForm.addEventListener("submit", (event) => {
     });
   }
 
-  saveTransactions();
-  renderTransactions();
-  updateSummary();
+  saveTransactions(); // Memicu RENDER_EVENT
   transactionForm.reset();
 });
 
+// Fitur Pencarian
 searchInput.addEventListener("input", () => {
   const keyword = searchInput.value.toLowerCase();
   const filtered = transactions.filter((transaction) =>
@@ -507,6 +511,19 @@ aboutModal.addEventListener("click", (event) => {
   if (event.target === aboutModal) hideModal(aboutModal);
 });
 
+/**
+ * ========================================================
+ * Custom Event Listener & Initial State
+ * ========================================================
+ */
+
+// Listener tunggal yang mendengarkan sinyal perubahan data
+document.addEventListener(RENDER_EVENT, () => {
+  renderTransactions();
+  updateSummary();
+});
+
+// Inisialisasi awal aplikasi
 loadTransactions();
 loadSettings();
 const storedSession = loadSession();
@@ -516,9 +533,9 @@ if (storedSession) {
 updateUserGreeting();
 updateAccountActions();
 hideAllAuthForms();
-renderTransactions();
-updateSummary();
 
+// Pemicu awal agar tampilan dirender pertama kali saat halaman dimuat
+document.dispatchEvent(new Event(RENDER_EVENT));
 
 
 /**
